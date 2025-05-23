@@ -1,50 +1,41 @@
-!pip install selenium webdriver-manager --quiet
-!apt-get update
-!apt install -y chromium-chromedriver
-
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-import time
-
-# تنظیمات Chrome
-chrome_options = Options()
-chrome_options.add_argument('--headless')
-chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--disable-dev-shm-usage')
-
-# راه‌اندازی درایور
-driver = webdriver.Chrome(options=chrome_options)
-
-try:
-    # باز کردن پنل
-    driver.get("http://188.75.92.68:8443/")
-    print("✅ صفحه بارگذاری شد!")
-    
-    # پر کردن فرم (با روش‌های مختلف)
-    username = driver.find_element("name", "Login")  # یا "username", "user"
-    password = driver.find_element("name", "Password")  # یا "pass"
-    
-    username.send_keys("YasNovin")
-    password.send_keys("Ta123456")
-    print("✅ اطلاعات وارد شدند!")
-    
-    # کلیک روی دکمه
-    login_btn = driver.find_element("id", "buttonLogOn")  # یا "login-btn"
-    login_btn.click()
-    print("✅ در حال ورود...")
-    
-    # تأخیر و بررسی نتیجه
-    time.sleep(5)
-    if "html5" in driver.current_url:
-        print("🎉 ورود موفق! صفحه فعلی:", driver.current_url)
-    else:
-        print("⚠️ احتمالاً خطا در ورود. صفحه:", driver.current_url)
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ورود خودکار به پنل</title>
+    <script>
+    function autoLogin() {
+        // باز کردن پنل در پنجره جدید
+        const panelWindow = window.open('http://188.75.92.68:8443/');
         
-except Exception as e:
-    print("❌ خطا:", str(e))
-    driver.save_screenshot("error.png")
-    print("📸 تصویر خطا ذخیره شد!")
-
-finally:
-    driver.quit()
-    print("🛑 مرورگر بسته شد.")
+        // تأخیر برای بارگذاری صفحه
+        setTimeout(() => {
+            try {
+                // پر کردن فرم
+                panelWindow.document.querySelector('input[name="Login"]').value = 'YasNovin';
+                panelWindow.document.querySelector('input[name="Password"]').value = 'Ta123456';
+                
+                // کلیک روی دکمه
+                panelWindow.document.getElementById('buttonLogOn').click();
+                
+                alert('ورود با موفقیت انجام شد!');
+            } catch(e) {
+                alert('خطا: ' + e.message);
+            }
+        }, 3000);
+    }
+    </script>
+</head>
+<body>
+    <button onclick="autoLogin()" style="
+        padding: 12px 24px;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    ">
+        ورود خودکار به پنل
+    </button>
+</body>
+</html>
