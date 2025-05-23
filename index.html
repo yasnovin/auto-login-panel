@@ -2,40 +2,49 @@
 <html>
 <head>
     <title>ورود خودکار به پنل</title>
-    <script>
-    function autoLogin() {
-        // باز کردن پنل در پنجره جدید
-        const panelWindow = window.open('http://188.75.92.68:8443/');
-        
-        // تأخیر برای بارگذاری صفحه
-        setTimeout(() => {
-            try {
-                // پر کردن فرم
-                panelWindow.document.querySelector('input[name="Login"]').value = 'YasNovin';
-                panelWindow.document.querySelector('input[name="Password"]').value = 'Ta123456';
-                
-                // کلیک روی دکمه
-                panelWindow.document.getElementById('buttonLogOn').click();
-                
-                alert('ورود با موفقیت انجام شد!');
-            } catch(e) {
-                alert('خطا: ' + e.message);
-            }
-        }, 3000);
-    }
-    </script>
+    <style>
+        body { font-family: Tahoma; text-align: center; padding: 50px; }
+        .btn { 
+            padding: 12px 25px; 
+            background: #4CAF50; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <button onclick="autoLogin()" style="
-        padding: 12px 24px;
-        background: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-    ">
-        ورود خودکار به پنل
-    </button>
+    <button onclick="startLogin()" class="btn">ورود خودکار</button>
+    
+    <script>
+    function startLogin() {
+        // مرحله 1: باز کردن پنل
+        const panelWindow = window.open('', '_blank');
+        panelWindow.location.href = 'http://188.75.92.68:8443/';
+        
+        // مرحله 2: بررسی هر 500ms تا صفحه کامل بارگذاری شود
+        const checkInterval = setInterval(() => {
+            try {
+                // شرط بررسی بارگذاری کامل صفحه
+                if(panelWindow.document.readyState === 'complete') {
+                    clearInterval(checkInterval);
+                    
+                    // پر کردن فرم
+                    panelWindow.document.querySelector('input[name="Login"]').value = 'YasNovin';
+                    panelWindow.document.querySelector('input[name="Password"]').value = 'Ta123456';
+                    
+                    // کلیک روی دکمه با تأخیر
+                    setTimeout(() => {
+                        panelWindow.document.getElementById('buttonLogOn').click();
+                        console.log('ورود انجام شد!');
+                    }, 1000);
+                }
+            } catch(e) {
+                console.log('در حال بارگذاری...');
+            }
+        }, 500);
+    }
+    </script>
 </body>
 </html>
